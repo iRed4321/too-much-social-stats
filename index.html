@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World!</title>
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <meta
+      http-equiv="X-Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="node_modules/normalize.css/normalize.css">
+        <link rel="stylesheet" href="node_modules/nouislider/dist/nouislider.min.css">
+        <link rel="stylesheet" href="style/style.css">
+    </head>
+    
+    <body>
+        <nav>
+            <ul>
+                <li id="import"> <img src="style/icons/upload.svg">
+                    <div>Import </div><input id="filepicker" type="file" webkitdirectory mozdirectory>
+                </li>
+                <li></li>
+                <li id="navOverview"> <img src="style/icons/home.svg">
+                    <div>Overview</div>
+                </li>
+                <li id="navConversations"><img src="style/icons/comment.svg">
+                    <div>Conversations</div>
+                </li>
+                <li id="navMore"> <img src="style/icons/menu.svg">
+                    <div>More </div>
+                </li>
+                <li>
+                    <div>Dark Mode</div><label class="switch"><input id="DarkModeToogle" type="checkbox"><span class="slider"> </span></label>
+                </li>
+            </ul>
+        </nav>
+        <section id="root"></section>
+    </body>
+    
+    </html>

@@ -1,0 +1,458 @@
+
+@font-face {
+    font-family: "EmojiOne";
+    src: url("EmojiOneColor.otf") format("otf");
+   }
+body{
+    --ray1: hsl(230, 10%, 100%);
+    --ray2: var(--ray1);
+    --tablegap: var(--ray1);
+    --row1: hsl(235, 10%, 92%);
+    --row2: hsl(235, 10%, 96%);
+    --text: hsl(230, 20%, 25%);
+    --txtH: black;
+    --glow: hsla(230, 100%, 15%, 30%);
+    --hover: hsl(230, 100%, 85%);
+    --input: var(--row1);
+    --shadow: hsla(230, 0%, 0%, 50%);
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    grid-template-rows: auto;
+    grid-template-areas: "nav section";
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    height: 100vh;
+}
+
+nav{
+    grid-area: nav;
+    background-color: var(--ray2);
+    box-shadow: 0px 0px 30px var(--shadow);
+    z-index: 1;
+    color: var(--text);
+    font-weight: bold;
+}
+
+nav ul{
+    height: calc(100vh - 10px);
+    display: flex;
+    flex-flow: column nowrap;
+    margin: 0px;
+    padding: 5px;
+    font-size: 1.2rem;
+}
+
+nav li{
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px;
+}
+
+nav li:not(:last-of-type):hover{
+    background-color: var(--hover);
+    color: var(--txtH);
+}
+
+nav li:nth-child(2){
+    height: 1px;
+    padding: 0px;
+    background-color: var(--text);
+}
+
+nav label div{
+    display: inline;
+}
+
+nav li img{
+    width: 25px;
+    vertical-align: middle;
+    filter: invert(var(--dark));
+}
+
+nav li div, nav li img{
+    padding: 10px;
+}
+
+nav li:not(:last-of-type):hover, nav label:hover{
+    cursor:pointer;
+}
+
+nav li:last-of-type{
+    margin-top: auto;
+    justify-content: space-evenly;
+}
+
+nav li:last-of-type > div{
+    padding: 10px 0px;
+}
+
+
+#filepicker{
+    display: none;
+}
+
+ /* The switch - the box around the slider */
+ .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    padding: 0px;
+  }
+  
+  .switch input {
+      display: none;
+  }
+  
+  /* The slider */
+  .slider {
+    display: inline-block;
+    cursor: pointer;
+    width: 60px;
+    height: 34px;
+    border-radius: 34px;
+    background-color: var(--hover);
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    border-radius: 50%;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: var(--hover);
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+
+.dark-mode {
+    --dark: 1;
+    --ray1: hsl(230, 10%, 16%);
+    --ray2: hsl(235, 10%, 20%);
+    --tablegap: var(--ray1);
+    --row1: var(--ray2);
+    --row2: hsl(235, 10%, 22%);
+    --text: hsl(230, 20%, 85%);
+    --txtH: white;
+    --glow: hsla(230, 100%, 85%, 30%);
+    --hover: hsl(230, 50%, 35%);
+    --input: var(--row2);
+}
+
+section {
+	grid-area: section;
+    --navSize: 0px;
+    height: 100vh - var(--navSize);
+	background: repeating-linear-gradient(120deg, var(--ray1), var(--ray1) 3px, var(--ray2) 3px, var(--ray2) 6px);
+    color: var(--text);
+    overflow-y: auto;
+}
+
+.gridjs-head{
+    grid-area: search;
+}
+
+.gridjs-wrapper{
+    grid-area: tableau;
+}
+
+.gridjs-footer{
+    grid-area: pages;
+}
+
+.gridjs-temp{
+    display: none;
+}
+
+.gridjs-currentPage{
+    background-color:var(--hover);
+}
+
+#timeRange{
+    grid-area: slider;
+}
+
+.gridjs-container{
+    display: grid;
+    height: calc(100% - var(--sectionPadding) * 2 - var(--navSize));
+    justify-content: space-evenly;
+    padding: var(--sectionPadding) 0px;
+    grid-template-columns: 50% 50%;
+    gap: 10px 10px;
+    grid-template-rows: auto;
+    grid-template-areas: 
+      "slider slider"
+      "search pages"
+      "tableau tableau";
+}
+
+#convTable{
+    --sectionPadding: 30px;
+    margin: 0px var(--sectionPadding);
+}
+
+#convTable table{
+    border-collapse: collapse;
+    width: 100%;
+    overflow: hidden;
+}
+
+#convTable th:not(:last-child), #convTable td:not(:last-child){
+    border-right: solid 4px var(--tablegap);
+}
+
+#convTable th, #convTable td{
+    padding: 9px;
+    padding-left: 20px;
+    font-size: 1.1rem;
+}
+
+#convTable th div{
+    display: inline;
+}
+
+#convTable tbody tr{
+    cursor: pointer;
+}
+
+#convTable th{
+    background-color: var(--hover);
+    padding: 15px 10px;
+    font-size: 1.2rem;
+}
+
+#convTable tbody tr:nth-child(even){
+    background-color: var(--row1);
+}
+#convTable tbody tr:nth-child(odd){
+    background-color: var(--row2);
+}
+
+#convTable tbody tr:hover{
+    box-shadow: 0px 0px 5px var(--glow);
+    position: relative;
+    z-index: 1;
+    transform: scale(1);
+}
+
+input, button{
+    background-color:var(--input);
+    padding: 10px;
+    border: none;
+    color: var(--text);
+}
+
+.gridjs-pages{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+}
+
+.gridjs-pages button{
+    cursor: pointer;
+    border: 1px solid var(--input);
+
+}
+
+.gridjs-pages button:hover{
+    border: 1px solid var(--glow);
+}
+
+.gridjs-sort {
+    line-height: 25px;
+    background-color: var(--hover);
+    cursor: pointer;
+    padding: 5px;
+}
+
+.gridjs-th-content{
+    padding: 5px;
+}
+
+.gridjs-sort::before {
+    content: "↕️ ";
+}
+
+
+#convMain{
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0px;
+    padding: 0px;
+    justify-content: space-evenly;
+    list-style-type: none;
+}
+
+#convMain > li{
+    border-radius: 10px;
+    margin: 10px;
+    box-shadow: 4px 4px 4px var(--shadow);
+    background-color: var(--hover);
+}
+
+#convMain .title{
+    font-size: 1.2rem;
+    font-weight: bold;
+    overflow: hidden;
+    color: var(--text);
+    text-align: center;
+    padding: 10px;
+    padding-bottom: 5px;
+}
+
+#convMain table{
+    padding: 10px;
+    margin: 5px;
+    background-color: var(--ray1);
+    border-radius: 10px;
+}
+#convMain td:nth-child(odd){
+    text-align: right;
+    padding-right: 5px;
+}
+
+#convGraphs{
+    display: flex;
+    justify-content: space-between;
+}
+
+#convGraphs > div{
+    flex: 0 0 auto;
+    /* width: 30%; */
+    padding: 0px 10px;
+}
+
+#timeRange {
+    padding-top: 40px;
+    padding-bottom: 5px;
+    padding-right: 17px;
+    padding-left: 17px;
+}
+
+.noUi-connect{
+    background: var(--hover);
+}
+
+.noUi-connects{
+    background: var(--ray1);
+}
+
+.noUi-origin .noUi-tooltip{
+	-webkit-transform: unset;
+	transform: unset;
+	left: unset;
+}
+
+.noUi-tooltip{
+    background: var(--ray2);
+    color: var(--text);
+}
+
+.noUi-origin:nth-child(odd) .noUi-tooltip{
+    right: 0%;
+}
+
+.noUi-handle:hover{
+    cursor: grab;
+}
+
+.noUi-active{
+    cursor: grabbing;
+}
+
+.noUi-handle {
+	border: 1px solid var(--glow);
+	border-radius: 3px;
+	background: var(--row1);
+	box-shadow: none;
+}
+
+.noUi-handle::before,
+.noUi-handle::after{
+    background-color: var(--glow);
+}
+  
+@media screen and (max-width: 1080px) {
+
+    body{
+        grid-template-columns: auto;
+        grid-template-rows: min-content 1fr;
+        grid-template-areas: "nav" "section";
+    }
+
+    nav{
+        box-shadow: 0px 0px 15px var(--shadow);
+    }
+
+    nav ul{
+        height: min-content;
+        flex-flow: row nowrap;  
+    }
+
+    nav li, nav li:not(:last-of-type) div, nav li img{
+        padding: 5px;
+    }
+    
+    nav li:nth-child(2){
+        width: 1px;
+        height: unset;
+    }
+    
+    nav li:last-of-type{
+        margin: 0px;
+        margin-left: auto;
+    }
+
+    nav li:last-of-type > div{
+        padding-right: 10px;
+    }
+
+    #convTable{
+        --sectionPadding: 15px;
+    }
+
+    section{
+        --navSize: 65px;
+    }
+
+    #convTable th{
+        padding: 10px;
+    }
+
+}
+
+#oneMsgGrid{
+    padding: 30px;
+}
+
+@media screen and (max-width: 830px) {
+    nav li div, nav li label{
+        display: none;
+    }
+
+    .switch{
+        margin-left: 40px;
+    }   
+
+    .switch::before {
+        content: '🌒';
+        display: inline-block;
+        position: absolute;
+        left: -30px;
+        font-size: 1.5rem;
+        vertical-align: middle;
+        top: 5px;
+    }
+
+}
