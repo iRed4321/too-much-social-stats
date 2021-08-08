@@ -1,15 +1,21 @@
 import {IString, IValue, TimeRange} from './common';
 
-function replaceEmojis(txt:string){
-    var from = ['󾌴', '󾦇', '󾮟'];
-    var to = ['joy', 'beers', 'ok_hand'];
+// function replaceEmojis(txt:string){
+//     var from = ['󾌴', '󾦇', '󾮟'];
+//     var to = ['joy', 'beers', 'ok_hand'];
 
-    // var txtNew = '';
+//     // var txtNew = '';
     
-    for (let i = 0; i < from.length; i++) {
-        txt = txt.replaceAll(from[i], ':'+to[i]+':');
-    }
-    return txt;
+//     for (let i = 0; i < from.length; i++) {
+//         txt = txt.replaceAll(from[i], ':'+to[i]+':');
+//     }
+//     return txt;
+// }
+
+class Msg {
+    sender_name: string;
+    timestamp_ms: number;
+    content: string;
 }
 
 class MsgStat {
@@ -51,12 +57,6 @@ class MsgStat {
     }
 }
 
-
-class Msg {
-    sender_name: string;
-    timestamp_ms: number;
-    content: string;
-}
 
 class ConvStats {
     readonly participants: IString;
@@ -351,4 +351,4 @@ function readFile(file:any) {
 
   }
 
-export { AllConvsStats, ConvStats, start as formatStats};
+export { AllConvsStats as AllConvData, ConvStats as OneConvData, start as formatStats};

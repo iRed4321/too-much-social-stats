@@ -20,6 +20,7 @@
   "author": "iRed4321",
   "license": "CC0-1.0",
   "devDependencies": {
+    "@types/wnumb": "^1.2.1",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.28.4",
     "electron": "^13.1.7",
@@ -30,6 +31,7 @@
     "chart.js": "^3.5.0",
     "gridjs": "^5.0.2",
     "normalize.css": "^8.0.1",
-    "nouislider": "^15.2.0"
+    "nouislider": "^15.2.0",
+    "wnumb": "^1.2.0"
   }
 }
