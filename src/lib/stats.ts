@@ -337,7 +337,7 @@ function readFile(file:any) {
     });
   }
   
-  function start(files:any): any{
+  function start(files:any){
   
     console.log('StartRead');
     var alljson = [];

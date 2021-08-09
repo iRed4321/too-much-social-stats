@@ -1,3 +1,5 @@
+import { ConvOne } from "./ConvOne";
+
 type IString = {[index: number]:string};
 type IValue = {[index: number]:number};
 type TimeRange = {
@@ -7,20 +9,33 @@ type TimeRange = {
 
 enum Conv{
     ONE,
-    ALL
+    ALL,
+    ANY
 }
 
-enum Tab{
-    Conv = 'CONV',
-    Main = 'MAIN'
+enum Main{
+    First,
+    Second
+}  
+
+enum Tab {
+    Main = 'main',
+    Conv = 'conv',
 }
 
-// type View = {
-//     [Tab.Conv: Conv | [Tab.Main] : string
-// }
+
+type ViewMain = [Tab.Main, Main]
+
+type ViewConv = [Tab.Conv, Conv]
+
+type View = ViewMain | ViewConv;
+
+
 
 type Action = {
-
+    view: View;
+    data: any;
+    type: string;
 }
 
 
@@ -28,5 +43,6 @@ export {
     IString,
     IValue,
     TimeRange,
-    Action
+    Action,
+    View, Main, Conv, Tab
 }
