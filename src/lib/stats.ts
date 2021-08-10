@@ -1,4 +1,4 @@
-import {IString, IValue, TimeRange} from './common';
+import {IString, IValue, TimeRange, MediaKind} from './common';
 
 // function replaceEmojis(txt:string){
 //     var from = ['󾌴', '󾦇', '󾮟'];
@@ -12,29 +12,102 @@ import {IString, IValue, TimeRange} from './common';
 //     return txt;
 // }
 
-class Msg {
-    sender_name: string;
-    timestamp_ms: number;
-    content: string;
+type Conv ={
+    is_still_participant: boolean;
+    magic_words: any;
+    messages: MsgList;
+    participants: {[index:number]:{name: string}};
+    thread_path: string;
+    thread_type: string;
+    title: string;
 }
 
+type Reaction = {
+    reaction: string;
+    actor: string;
+}
+
+type Share = {
+    link: string;
+}
+
+type Msg = {
+    sender_name: string;
+    timestamp_ms: number;
+    photos?: any[];
+    content?: string;
+    share?: Share;
+    reactions?: Reaction[];
+}
+
+type MsgList = {[index: number] : Msg};
+
+
+type MsgPhoto = [MediaKind.Photo, number];
+type MsgVideo = [MediaKind.Video];
+type MsgAudio = [MediaKind.Audio];
+type MsgSticker = [MediaKind.Sticker];
+type MsgGif = [MediaKind.Gif];
+
+type MsgText = {char:number, word: number};
+type Media = MsgPhoto | MsgVideo | MsgAudio | MsgSticker | MsgGif;
+
 class MsgStat {
-    readonly charCount: number;
-    readonly wordCount: number;
+    readonly msgText?: MsgText;
+    readonly msgShare?: boolean;
+    readonly msgData?: Media;
+    readonly reactionCount?: number;
     readonly author: number;
 
-    constructor(msg: string, author: number) {
-        this.charCount = msg.length;
-        this.wordCount = msg.split(' ').length;
+    constructor(msg: Msg, author: number) {
         this.author = author;
+        if('content' in msg){
+            this.msgText = {
+                char: msg.content.length,
+                word: msg.content.split(' ').length
+            }
+
+            if('share' in msg){
+                this.msgShare = true;
+            }
+        }
+
+        if('reactions' in msg){
+            this.reactionCount = msg.reactions.length;
+        }
+        
+        if('sticker' in msg){
+            this.msgData = [MediaKind.Gif];
+        } else if('photos' in msg){
+            this.msgData = [MediaKind.Photo, msg.photos.length];
+        } else if('audio_files' in msg){
+            this.msgData = [MediaKind.Audio];
+        } else if('gifs' in msg){
+            this.msgData = [MediaKind.Gif];
+        } else if('videos' in msg){
+            this.msgData = [MediaKind.Video];
+        }
+
+    }
+
+    getMedia(){
+        return this.msgData[0];
+    }
+
+    getReactionCount(){
+        return this.reactionCount;
+    }
+
+    getPhotoCount(){
+        return this.msgData[1];
     }
 
     getCharCount() {
-        return this.charCount;
+        return this.msgText.char;
     }
 
     getWordCount() {
-        return this.wordCount;
+        return this.msgText.word;
     }
 
     getAuthor() {
@@ -42,19 +115,13 @@ class MsgStat {
     }
 
     getAuthorName(list: string[]) {
-        return list[this.author];
+        return list[0];
     }
 
     isAuthor(test: number) {
         return test === this.author;
     }
 
-    getStats() {
-        return {
-            chars: this.charCount,
-            words: this.wordCount
-        }
-    }
 }
 
 
@@ -69,11 +136,12 @@ class ConvStats {
         this.msgs = {};
     }
 
-    addMsgs(msgs: Msg) {
-        Object.values(msgs).forEach((msg) => {
-            let author = getKeyByValue(this.participants, msg.sender_name);
-            if (msg.content != undefined && author != undefined) {
-                this.msgs[msg.timestamp_ms] = new MsgStat(msg.content, author);
+    addMsgs(msgs: MsgList) {
+        var self = this;
+        Object.values(msgs).forEach(function(msg) {
+            let author = getKeyByValue(self.participants, msg.sender_name);
+            if (author != undefined) {
+                self.msgs[msg.timestamp_ms] = new MsgStat(msg, author);
             }
         });
 
@@ -162,14 +230,6 @@ class ConvStats {
         return total;
     }
 
-    getStats(time:TimeRange = null) {
-        return {
-            msgs: Object.values(this.getMsgCount(time)),
-            words: Object.values(this.getWordCount(time)),
-            chars: Object.values(this.getCharCount(time))
-        }
-    }
-
     getAuthors() {
         return this.participants;
     }
@@ -209,7 +269,7 @@ class ConvStats {
 
 }
 
-function getKeyByValue(object, value: number):number {
+function getKeyByValue(object, value: number|string):number {
     return Object.keys(object).find(key => object[key] === value) as unknown as number;;
 }
 
@@ -217,10 +277,12 @@ class AllConvsStats {
     readonly participants: IString;
     readonly convs: ConvStats[];
 
-    constructor(convs) {
+    constructor(convs: Conv[]) {
         convs = convs.filter(function (conv) {
             return conv.hasOwnProperty('thread_type') && conv.thread_type.startsWith("Regular");
         });
+
+        console.log(convs);
 
         var joined:{[index: string]: ConvStats} = {};
 
@@ -230,7 +292,7 @@ class AllConvsStats {
             var id = conv.thread_path.split("_").pop();
             if (!joined.hasOwnProperty(id)) {
                 var participants:IString = {};
-                Object.values(conv.participants).forEach(function (someone:any) {
+                Object.values(conv.participants).forEach(function (someone) {
 
                     if (!Object.values(tempparticipants).includes(someone.name)) {
                         tempparticipants[Object.keys(tempparticipants).length] = someone.name;
@@ -310,16 +372,21 @@ class AllConvsStats {
 
 function FixStringValue(value:any) {
     switch (typeof value) {
-      case 'string':
-        return decodeURIComponent(escape(value));
-      case 'object':
-        var newObject = new Object()
-        for (const attr in value) {
-          newObject[attr] = FixStringValue(value[attr])
-        }
-        return newObject
-      default:
-        return value
+        case 'string':
+            return decodeURIComponent(escape(value));
+        case 'object':
+            var newObject: Object;
+            if(Array.isArray(value)){
+                newObject = new Array();
+            } else{
+                newObject = new Object();
+            }
+            for (const attr in value) {
+                newObject[attr] = FixStringValue(value[attr])
+            }
+            return newObject
+        default:
+            return value
     }
 }
 

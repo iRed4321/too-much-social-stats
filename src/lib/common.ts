@@ -45,7 +45,45 @@ function addDiv(to, from) {
     var div = document.createElement("div");
     div.id = from;
     document.getElementById(to).appendChild(div);
-  }
+}
+
+type Photo = {
+    uri: string;
+    creation_timestamp:number;
+}
+
+type Video = {
+    uri: string,
+    creation_timestamp: number,
+    thumbnail: {
+        uri: string
+    }
+}
+
+type Gif = {
+    uri: string;
+}
+
+type Audio = {
+    uri: string;
+    creation_timestamp:number;
+}
+
+type Text = string;
+
+type Sticker = {
+    uri: string;
+}
+
+
+// type MsgKind = Sticker | Audio[] | Gif[] | Video[] | Photo[] | Text;
+enum MediaKind {
+    Sticker,
+    Audio,
+    Gif,
+    Video,
+    Photo,
+}
 
 export {
     IString,
@@ -54,5 +92,6 @@ export {
     Action,
     View, Main, Conv, Tab,
     SortKind, Dir,
-    addDiv
+    addDiv,
+    MediaKind
 }

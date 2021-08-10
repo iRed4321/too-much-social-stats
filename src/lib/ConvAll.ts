@@ -17,7 +17,7 @@ class ConvAll{
             data: alldata,
             pagination: {
               enabled: true,
-              limit: 19,
+              limit: 20,
               summary: false
             },
             sort: true,
@@ -47,6 +47,12 @@ class ConvAll{
         if (this.sort.order == Dir.DESC) {
           head.click();
         }
+
+        var self = this;
+        var input = document.getElementsByClassName('gridjs-search-input')[0];
+        input.addEventListener('change', function (evt){
+          self.config.search.keyword = (evt.target as HTMLInputElement).value;
+        })
     }
 
     getUpdate(){
