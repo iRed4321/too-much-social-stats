@@ -3,12 +3,11 @@ import { Action, Tab, Conv } from "./common";
 class Navbar{
     getUpdate(){
         return new Promise<Action>(function (resolve) {
-            var action : Action = {
-                type: 'upTimeRange',
-                data: null,
-                view: [Tab.Conv, Conv.ANY] 
-            };
-            resolve(action);
+            document.getElementById('navConversations').addEventListener('click', function(){
+                resolve({
+                    view: [Tab.Conv, Conv.ALL] 
+                });
+            })
         });
     }
 }

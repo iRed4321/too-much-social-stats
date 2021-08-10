@@ -2,13 +2,17 @@ import {formatStats, AllConvData, OneConvData} from './lib/stats';
 import { ConvAll } from './lib/ConvAll';
 import { ConvOne } from './lib/ConvOne';
 import { TimeSlider } from './lib/TimeSlider';
-import { Action, Conv, Tab } from './lib/common';
+import { Action, Conv, Tab, addDiv } from './lib/common';
+import { Navbar } from './lib/Navbar';
+
+
 
 class ActionLoop{
   objects:{
     slider: TimeSlider,
     convAll: ConvAll,
-    convOne: ConvOne
+    navBar: Navbar
+    // convOne: ConvOne
   };
   action: Action;
   root: HTMLElement = document.getElementById('root');
@@ -17,12 +21,11 @@ class ActionLoop{
     this.convs = convs;
     this.objects = {
       slider: new TimeSlider(convs.getFullRange()),
-      convAll: new ConvAll(),
-      convOne: new ConvOne()
+      convAll: new ConvAll(convs.toTable()),
+      navBar: new Navbar()
+      // convOne: new ConvOne()
     }
     this.action = {
-      type: 'none',
-      data: null,
       view: [Tab.Conv, Conv.ALL]
     }
 
@@ -35,7 +38,7 @@ class ActionLoop{
   update(){
     switch (this.action.type) {
       case 'upTimeRange':
-        // this.objects.convAll.updateData(this.convs.toTable(this.objects.slider.currRange));
+        this.objects.convAll.updateData(this.convs.toTable(this.action.data));
         break;
     
       default:
@@ -44,14 +47,18 @@ class ActionLoop{
   }
 
   displayConv(){
+    addDiv('root', 'convTable');
+
     switch (this.action.view[1]) {
       case Conv.ALL:
+        this.objects.convAll.display();
         break;
       
       case Conv.ONE:
+        // this.objects.convOne.display();
         break;
-    
     }
+    this.objects.slider.display();
   }
 
   display(){
@@ -65,7 +72,7 @@ class ActionLoop{
   }
 
   getAnyAction(){
-    var updaters: Promise<Action>[];
+    var updaters: Promise<Action>[] = [];
     Object.values(this.objects).forEach(obj => {
       updaters.push(obj.getUpdate());
     });

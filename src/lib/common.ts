@@ -1,5 +1,3 @@
-import { ConvOne } from "./ConvOne";
-
 type IString = {[index: number]:string};
 type IValue = {[index: number]:number};
 type TimeRange = {
@@ -19,30 +17,42 @@ enum Main{
 }  
 
 enum Tab {
-    Main = 'main',
-    Conv = 'conv',
+    Main,
+    Conv,
 }
-
 
 type ViewMain = [Tab.Main, Main]
-
 type ViewConv = [Tab.Conv, Conv]
-
 type View = ViewMain | ViewConv;
 
-
-
 type Action = {
-    view: View;
-    data: any;
-    type: string;
+    view?: View;
+    data?: any;
+    type?: string;
 }
 
+enum Dir{
+    ASC,
+    DESC
+}
+
+type SortKind = {
+    col: number;
+    order: Dir;
+}
+
+function addDiv(to, from) {
+    var div = document.createElement("div");
+    div.id = from;
+    document.getElementById(to).appendChild(div);
+  }
 
 export {
     IString,
     IValue,
     TimeRange,
     Action,
-    View, Main, Conv, Tab
+    View, Main, Conv, Tab,
+    SortKind, Dir,
+    addDiv
 }

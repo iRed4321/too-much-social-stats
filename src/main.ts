@@ -13,6 +13,7 @@ function createWindow() {
 
   mainWindow.loadFile(path.join(__dirname, "../index.html"));
   mainWindow.removeMenu();
+  mainWindow.setTitle('FB Messenger stats');
   mainWindow.maximize();
   mainWindow.webContents.openDevTools();
 }

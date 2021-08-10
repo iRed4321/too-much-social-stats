@@ -208,6 +208,10 @@ section {
     overflow: hidden;
 }
 
+#convTable th:not(:first-child){
+    width: 180px;
+}
+
 #convTable th:not(:last-child), #convTable td:not(:last-child){
     border-right: solid 4px var(--tablegap);
 }
@@ -245,6 +249,7 @@ section {
     z-index: 1;
     transform: scale(1);
 }
+
 
 input, button{
     background-color:var(--input);
