@@ -1,4 +1,4 @@
-import {IString, IValue, TimeRange, MediaKind} from './common';
+import {IString, IValue, TimeRange, MediaKind, MsgTextProp} from './common';
 
 // function replaceEmojis(txt:string){
 //     var from = ['󾌴', '󾦇', '󾮟'];
@@ -12,6 +12,17 @@ import {IString, IValue, TimeRange, MediaKind} from './common';
 //     return txt;
 // }
 
+class SuperMap<MediaKind> extends Map<MediaKind, number> {
+
+    add(key:MediaKind, value:number) {
+        super.has(key) && super.set(key, super.get(key) + value)
+    }
+
+    del(key:MediaKind, value:number) {
+        super.has(key) && super.set(key, super.get(key) - value)
+    }
+}
+
 type Conv ={
     is_still_participant: boolean;
     magic_words: any;
@@ -22,93 +33,74 @@ type Conv ={
     title: string;
 }
 
-type Reaction = {
+type ReactionOriginal = {
     reaction: string;
     actor: string;
 }
+
 
 type Share = {
     link: string;
 }
 
-type Msg = {
+type MsgOriginal = {
     sender_name: string;
     timestamp_ms: number;
     photos?: any[];
     content?: string;
     share?: Share;
-    reactions?: Reaction[];
+    reactions?: ReactionOriginal[];
 }
 
-type MsgList = {[index: number] : Msg};
+type MsgList = {[index: number] : MsgOriginal};
 
-
-type MsgPhoto = [MediaKind.Photo, number];
-type MsgVideo = [MediaKind.Video];
-type MsgAudio = [MediaKind.Audio];
-type MsgSticker = [MediaKind.Sticker];
-type MsgGif = [MediaKind.Gif];
-
-type MsgText = {char:number, word: number};
-type Media = MsgPhoto | MsgVideo | MsgAudio | MsgSticker | MsgGif;
+type MsgText = {
+    [MsgTextProp.Char]: number,
+    [MsgTextProp.Word]: number,
+};
 
 class MsgStat {
-    readonly msgText?: MsgText;
-    readonly msgShare?: boolean;
-    readonly msgData?: Media;
+    // readonly msgText?: MsgText;
+    // readonly msgShare?: boolean;
+    // readonly media?: Media;
+    readonly msgData: Map<MediaKind, number>;
     readonly reactionCount?: number;
     readonly author: number;
 
-    constructor(msg: Msg, author: number) {
+    constructor(msg: MsgOriginal, author: number) {
         this.author = author;
+        this.msgData = new Map();
+
         if('content' in msg){
-            this.msgText = {
-                char: msg.content.length,
-                word: msg.content.split(' ').length
-            }
-
-            if('share' in msg){
-                this.msgShare = true;
-            }
+            this.msgData.set(MediaKind.Text, 1);
         }
-
         if('reactions' in msg){
-            this.reactionCount = msg.reactions.length;
+            this.msgData.set(MediaKind.Reaction, msg.reactions.length);
         }
         
         if('sticker' in msg){
-            this.msgData = [MediaKind.Gif];
+            this.msgData.set(MediaKind.Sticker, 1);
         } else if('photos' in msg){
-            this.msgData = [MediaKind.Photo, msg.photos.length];
+            this.msgData.set(MediaKind.Photo, msg.photos.length);
         } else if('audio_files' in msg){
-            this.msgData = [MediaKind.Audio];
+            this.msgData.set(MediaKind.Audio, 1);
         } else if('gifs' in msg){
-            this.msgData = [MediaKind.Gif];
+            this.msgData.set(MediaKind.Gif, 1);
         } else if('videos' in msg){
-            this.msgData = [MediaKind.Video];
+            this.msgData.set(MediaKind.Video, 1);
         }
 
     }
 
-    getMedia(){
-        return this.msgData[0];
+    getData(){
+        return this.msgData;
     }
+
 
     getReactionCount(){
         return this.reactionCount;
     }
 
-    getPhotoCount(){
-        return this.msgData[1];
-    }
-
-    getCharCount() {
-        return this.msgText.char;
-    }
-
-    getWordCount() {
-        return this.msgText.word;
-    }
 
     getAuthor() {
         return this.author;
@@ -147,87 +139,64 @@ class ConvStats {
 
     }
 
+    getCount(time:TimeRange, what:MediaKind[]) {
+        var count:{[index: number]: SuperMap<MediaKind>};
 
-    getWordCount(time:TimeRange = null) {
-        var count:IValue = {};
-        Object.keys(this.getAuthors()).forEach( function (element) {
-            count[element] = 0;
+        count = {};
+
+        Object.keys(this.getAuthors()).forEach(author => {
+            count[author] = new SuperMap();
         });
+
         if (time == null) {
-            Object.values(this.msgs).forEach(msg => {
-                count[msg.getAuthor()] += msg.getWordCount();
+            for (const timestamp in this.msgs) {
+                var values = this.msgs[timestamp].getData();
+                var self = this;
+                what.forEach(function(type){
+                    if(values.has(type)){
+                        if(count[self.msgs[timestamp].getAuthor()].has(type)){
+                            count[self.msgs[timestamp].getAuthor()].add(type, values.get(type));
+                        } else{
+                            count[self.msgs[timestamp].getAuthor()].set(type, values.get(type));
+                        }
+                    }
+                });
+            }
+        } else {
+            for (const timestamp in this.msgs) {
+                const tp = timestamp as unknown as number;
+                if (tp > time.min && tp < time.max) {
+                    var values = this.msgs[timestamp].getData();
+                    var self = this;
+                    what.forEach(function(type){
+                        if(values.has(type)){
+                            if(count[self.msgs[timestamp].getAuthor()].has(type)){
+                                count[self.msgs[timestamp].getAuthor()].add(type, values.get(type));
+                            } else{
+                                count[self.msgs[timestamp].getAuthor()].set(type, values.get(type));
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        return count;
+
+    }
+
+    getCountAll(time:TimeRange, what:MediaKind[]){
+        var count = Object.values(this.getCount(time, what));
+        var totalCount = new SuperMap<MediaKind>();
+        what.forEach(type => {
+            totalCount.set(type, 0);
+            count.forEach(person => {
+                if(person.has(type)){
+                    totalCount.add(type, person.get(type));
+                }
             });
-        } else {
-            for (let timestamp in this.msgs) {
-                const tp = timestamp as unknown as number;
-                if (tp > time.min && tp < time.max) {
-                    count[this.msgs[timestamp].getAuthor()] += this.msgs[timestamp].getWordCount();
-                }
-            }
-        }
-        return count;
-    }
-
-    getCharCount(time:TimeRange = null) {
-        var count:IValue = {};
-        Object.keys(this.getAuthors()).forEach(element => {
-            count[element] = 0;
         });
-        if (time == null) {
-            Object.values(this.msgs).forEach(msg => {
-                count[msg.getAuthor()] += msg.getCharCount();
-            });
-        } else {
-            for (const timestamp in this.msgs) {
-                const tp = timestamp as unknown as number;
-                if (tp > time.min && tp < time.max) {
-                    count[this.msgs[timestamp].getAuthor()] += this.msgs[timestamp].getCharCount();
-                }
-            }
-        }
-        return count;
-    }
-
-    getMsgCount(time:TimeRange = null) {
-        var count:IValue = {};
-        Object.keys(this.getAuthors()).forEach(element => {
-            count[element] = 0;
-        });
-        if (time == null) {
-            for (const timestamp in this.msgs) {
-                count[this.msgs[timestamp].getAuthor()]++;
-            }
-        } else {
-            for (const timestamp in this.msgs) {
-                const tp = timestamp as unknown as number;
-                if (tp > time.min && tp < time.max) {
-                    count[this.msgs[timestamp].getAuthor()]++;
-                }
-            }
-        }
-
-        return count;
-    }
-
-    getCount(what:string, time:TimeRange) {
-        switch (what) {
-            case 'word':
-                return this.getWordCount(time);
-            case 'msg':
-                return this.getMsgCount(time);
-            case 'char':
-                return this.getCharCount(time);
-        }
-    }
-
-    getCountAll(what:string, time:TimeRange = null) {
-        var all = this.getCount(what, time);
-        var total = 0;
-
-        for (const someone in all) {
-            total += all[someone];
-        }
-        return total;
+        return totalCount;
     }
 
     getAuthors() {
@@ -285,7 +254,6 @@ class AllConvsStats {
         console.log(convs);
 
         var joined:{[index: string]: ConvStats} = {};
-
         var tempparticipants:IString = {};
 
         convs.forEach(function (conv) {
@@ -307,22 +275,6 @@ class AllConvsStats {
 
         this.participants = tempparticipants;
         this.convs = Object.values(joined);
-    }
-
-    getCharCount(time:TimeRange = null) {
-        var count:number = 0;
-        this.convs.forEach(conv => {
-            count += conv.getCountAll('char', time);
-        });
-        return count;
-    }
-
-    getWordCount(time:TimeRange = null) {
-        var count:number = 0;
-        this.convs.forEach(conv => {
-            count += conv.getCountAll('msg', time);
-        });
-        return count;
     }
 
     getFullRange() {
@@ -348,15 +300,21 @@ class AllConvsStats {
         return range;
     }
 
-    toTable(time:TimeRange = null) {
+    toTable(options:MediaKind[], time:TimeRange = null) {
         var alldata = [];
         this.convs.forEach((conv, index) => {
-            var msgCount = conv.getCountAll("msg", time);
-            if (msgCount > 0) {
+            var msgCount = conv.getCountAll(time, options);
+            var total = 0;
+            options.forEach(kind => {
+                if(msgCount.has(kind)){
+                    total+= msgCount.get(kind);
+                }
+            });
+            if (total > 0) {
                 var dataConv = [];
                 dataConv.push(index);
                 dataConv.push(conv.getTitle());
-                dataConv.push(msgCount);
+                dataConv.push(total);
                 dataConv.push(conv.getAuthorCount());
                 alldata.push(dataConv);
             }
@@ -367,6 +325,10 @@ class AllConvsStats {
     get(conv:any) {
         return this.convs[conv];
     }
+
+    // getCount(time: TimeRange, ...types: MediaKind[]){
+        
+    // }
 
 }
 

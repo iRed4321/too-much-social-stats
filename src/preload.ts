@@ -2,7 +2,7 @@ import {formatStats, AllConvData, OneConvData} from './lib/stats';
 import { ConvAll } from './lib/ConvAll';
 import { ConvOne } from './lib/ConvOne';
 import { TimeSlider } from './lib/TimeSlider';
-import { Action, Conv, Tab, addDiv } from './lib/common';
+import { Action, Conv, Tab, addDiv, MediaKind } from './lib/common';
 import { Navbar } from './lib/Navbar';
 
 
@@ -21,7 +21,16 @@ class ActionLoop{
     this.convs = convs;
     this.objects = {
       slider: new TimeSlider(convs.getFullRange()),
-      convAll: new ConvAll(convs.toTable()),
+      convAll: new ConvAll(convs.toTable(
+        [
+        MediaKind.Audio,
+        MediaKind.Gif,
+        MediaKind.Photo,
+        MediaKind.Sticker,
+        MediaKind.Text,
+        MediaKind.Video
+        ]
+      )),
       navBar: new Navbar()
       // convOne: new ConvOne()
     }
