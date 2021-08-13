@@ -55,11 +55,11 @@ class FilterFields{
         ui.id = 'filtersFields';
         var stringhtml = '';
         this.filters.forEach(function(value){
-            stringhtml += '<div><label for="'+value.id+'">'+value.label+'</label><input type="checkbox" id="' + value.id + '" name="filter"';
+            stringhtml += '<div><input type="checkbox" id="' + value.id + '" name="filter"';
             if(value.state){
                 stringhtml +=' checked';
             }
-            stringhtml += '></div>';
+            stringhtml += '><label for="'+value.id+'">'+value.label+'</label></div>';
 
         });
         ui.innerHTML = stringhtml;

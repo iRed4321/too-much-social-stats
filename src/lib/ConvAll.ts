@@ -36,6 +36,7 @@ class ConvAll{
     }
 
     display(){
+        console.log(this.sort);
         var container = document.getElementById("convTable");
         this.grid = new Grid(this.config);
         this.grid.render(container);
@@ -50,6 +51,17 @@ class ConvAll{
         }
 
         var self = this;
+        Array.from(document.getElementsByClassName("gridjs-th")).forEach((element, index) => {
+          element.addEventListener('click', function () {
+            if (index != self.sort.col) {
+              self.sort.col = index;
+              self.sort.order = Dir.ASC;
+            } else {
+              self.sort.order = (self.sort.order == Dir.DESC) ? Dir.ASC : Dir.DESC;
+            }
+          });
+        });
+
         var input = document.getElementsByClassName('gridjs-search-input')[0];
         input.addEventListener('change', function (evt){
           self.config.search.keyword = (evt.target as HTMLInputElement).value;

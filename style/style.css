@@ -183,18 +183,23 @@ section {
     grid-area: slider;
 }
 
+#filtersFields{
+    grid-area: filter;
+}
+
 .gridjs-container{
     display: grid;
     height: calc(100% - var(--sectionPadding) * 2 - var(--navSize));
     justify-content: space-evenly;
     padding: var(--sectionPadding) 0px;
     grid-template-columns: 50% 50%;
-    gap: 10px 10px;
+    gap: 10px 0px;
     grid-template-rows: auto;
     grid-template-areas: 
       "slider slider"
       "search pages"
-      "tableau tableau";
+      "tableau tableau"
+      "filter filter";
 }
 
 #convTable{
@@ -388,6 +393,42 @@ input, button{
     background-color: var(--glow);
 }
   
+#filtersFields{
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    width: 100%;
+}
+
+#filtersFields > div{
+    margin: 0px 5px;
+}
+
+#filtersFields label{
+    padding: 5px;
+    border: 3px solid var(--hover);
+    display: block;
+    cursor: pointer;
+}
+
+#filtersFields input{
+    display: none;
+}
+
+#filtersFields input:checked ~ label{
+    background-color: var(--hover);
+}
+
+/* #filtersFields input{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 140px;
+    height: 100px;
+    opacity: 0;
+    cursor: pointer;
+} */
+
 @media screen and (max-width: 1080px) {
 
     body{
