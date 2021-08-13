@@ -301,6 +301,8 @@ class AllConvsStats {
     }
 
     toTable(options:MediaKind[], time:TimeRange = null) {
+        console.log(options);
+        console.log(time);
         var alldata = [];
         this.convs.forEach((conv, index) => {
             var msgCount = conv.getCountAll(time, options);

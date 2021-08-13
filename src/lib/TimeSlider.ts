@@ -43,7 +43,7 @@ class TimeSlider {
             self.slider.noUiSlider.on('set', function (values:[number, number]) {
                 self.setCurrRange(values);
                 var action : Action = {
-                    type: 'upTimeRange',
+                    type: 'updateData',
                     data: self.getCurrRange(),
                     view: [Tab.Conv, Conv.ANY] 
                 };

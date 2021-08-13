@@ -1,10 +1,11 @@
 import { Grid } from "gridjs";
-import { Action, Conv, Tab, SortKind, Dir} from "./common";
+import { Action, Conv, Tab, SortKind, Dir, MediaKind} from "./common";
 
 class ConvAll{
     grid: Grid;
     config: any;
     sort: SortKind;
+    msgKind: MediaKind[];
 
     constructor(alldata: any[]){
         this.config = {

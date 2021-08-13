@@ -1,5 +1,6 @@
 import {formatStats, AllConvData, OneConvData} from './lib/stats';
 import { ConvAll } from './lib/ConvAll';
+import { FilterFields } from './lib/FilterFields';
 import { ConvOne } from './lib/ConvOne';
 import { TimeSlider } from './lib/TimeSlider';
 import { Action, Conv, Tab, addDiv, MediaKind } from './lib/common';
@@ -9,6 +10,7 @@ import { Navbar } from './lib/Navbar';
 
 class ActionLoop{
   objects:{
+    filters: FilterFields,
     slider: TimeSlider,
     convAll: ConvAll,
     navBar: Navbar
@@ -20,6 +22,7 @@ class ActionLoop{
   constructor(convs: AllConvData){
     this.convs = convs;
     this.objects = {
+      filters: new FilterFields(),
       slider: new TimeSlider(convs.getFullRange()),
       convAll: new ConvAll(convs.toTable(
         [
@@ -46,10 +49,10 @@ class ActionLoop{
 
   update(){
     switch (this.action.type) {
-      case 'upTimeRange':
-        this.objects.convAll.updateData(this.convs.toTable(this.action.data));
+      case 'updateData':
+        this.objects.convAll.updateData(this.convs.toTable(this.objects.filters.get(), this.objects.slider.getCurrRange()));
         break;
-    
+        
       default:
         break;
     }
@@ -68,6 +71,7 @@ class ActionLoop{
         break;
     }
     this.objects.slider.display();
+    this.objects.filters.display();
   }
 
   display(){
