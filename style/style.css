@@ -501,4 +501,51 @@ input, button{
         top: 5px;
     }
 
+    #filtersFields label{
+        font-size: 0px;
+    }
+
+    #filtersFields label::after{
+        display: block;
+        content: '';
+        width: 30px;
+        height: 30px;
+    }
+
+    #filtersFields label[for="filt_Audio"]::after{
+        background: url("./icons/microphone.svg") no-repeat left top;
+        background-size: cover;
+    }
+
+    #filtersFields label[for="filt_Photo"]::after{
+        background: url("./icons/image.svg") no-repeat left top;
+        background-size: cover;
+    }
+
+    #filtersFields label[for="filt_Video"]::after{
+        background: url("./icons/video.svg") no-repeat left top;
+        background-size: cover;
+    }
+
+    #filtersFields label[for="filt_Gif"]::after{
+        background: url("./icons/gif.svg") no-repeat left top;
+        background-size: cover;
+    }
+
+    #filtersFields label[for="filt_Text"]::after{
+        background: url("./icons/font.svg") no-repeat left top;
+        background-size: cover;
+
+    }
+
+    #filtersFields label[for="filt_Sticker"]::after{
+        background: url("./icons/badge.svg") no-repeat left top;
+        background-size: cover;
+    }
+
+    #filtersFields label[for="filt_Reaction"]::after{
+        background: url("./icons/heart.svg") no-repeat left top;
+        background-size: cover;
+    }
+
 }
