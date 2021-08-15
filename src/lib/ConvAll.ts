@@ -18,7 +18,7 @@ class ConvAll{
             data: alldata,
             pagination: {
               enabled: true,
-              limit: 20,
+              limit: 19,
               summary: false
             },
             sort: true,
@@ -36,7 +36,6 @@ class ConvAll{
     }
 
     display(){
-        console.log(this.sort);
         var container = document.getElementById("convTable");
         this.grid = new Grid(this.config);
         this.grid.render(container);

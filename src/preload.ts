@@ -122,7 +122,7 @@ window.addEventListener("DOMContentLoaded", () => {
   })
 
   document.getElementById("filepicker").addEventListener("change", function (event:any) {
-
+    
     formatStats(event.target.files).then((values) => {
       var loop = new ActionLoop(new AllConvData(values));
       loop.run();

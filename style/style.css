@@ -153,7 +153,9 @@ nav li:last-of-type > div{
 section {
 	grid-area: section;
     --navSize: 0px;
-    height: 100vh - var(--navSize);
+    --sectionPadding: 30px;
+    padding: var(--sectionPadding);
+    height: calc(100vh - var(--navSize) - var(--sectionPadding) * 2);
 	background: repeating-linear-gradient(120deg, var(--ray1), var(--ray1) 3px, var(--ray2) 3px, var(--ray2) 6px);
     color: var(--text);
     overflow-y: auto;
@@ -165,6 +167,7 @@ section {
 
 .gridjs-wrapper{
     grid-area: tableau;
+    min-height: 775px;
 }
 
 .gridjs-footer{
@@ -187,24 +190,16 @@ section {
     grid-area: filter;
 }
 
-.gridjs-container{
+.gridjs-container {
     display: grid;
-    height: calc(100% - var(--sectionPadding) * 2 - var(--navSize));
-    justify-content: space-evenly;
-    padding: var(--sectionPadding) 0px;
-    grid-template-columns: 50% 50%;
-    gap: 10px 0px;
-    grid-template-rows: auto;
-    grid-template-areas: 
-      "slider slider"
-      "search pages"
-      "tableau tableau"
-      "filter filter";
-}
-
-#convTable{
-    --sectionPadding: 30px;
-    margin: 0px var(--sectionPadding);
+    height: calc(100vh - var(--sectionPadding) * 2 - var(--navSize));
+    justify-content: space-between;
+    align-content: space-between;
+    grid-template-rows: min-content min-content auto min-content;
+    grid-template-areas: "slider slider"
+        "search pages"
+        "filter filter"
+        "tableau tableau";
 }
 
 #convTable table{
@@ -225,6 +220,10 @@ section {
     padding: 9px;
     padding-left: 20px;
     font-size: 1.1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 0;
 }
 
 #convTable th div{
@@ -235,7 +234,12 @@ section {
     cursor: pointer;
 }
 
+#convTable th:hover{
+    text-decoration: underline;
+}
+
 #convTable th{
+    cursor: pointer;
     background-color: var(--hover);
     padding: 15px 10px;
     font-size: 1.2rem;
@@ -463,12 +467,9 @@ input, button{
     nav li:last-of-type > div{
         padding-right: 10px;
     }
-
-    #convTable{
-        --sectionPadding: 15px;
-    }
-
+    
     section{
+        --sectionPadding: 15px;
         --navSize: 65px;
     }
 

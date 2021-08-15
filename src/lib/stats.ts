@@ -60,9 +60,6 @@ type MsgText = {
 };
 
 class MsgStat {
-    // readonly msgText?: MsgText;
-    // readonly msgShare?: boolean;
-    // readonly media?: Media;
     readonly msgData: Map<MediaKind, number>;
     readonly reactionCount?: number;
     readonly author: number;
@@ -95,12 +92,6 @@ class MsgStat {
     getData(){
         return this.msgData;
     }
-
-
-    getReactionCount(){
-        return this.reactionCount;
-    }
-
 
     getAuthor() {
         return this.author;
@@ -144,7 +135,7 @@ class ConvStats {
 
         count = {};
 
-        Object.keys(this.getAuthors()).forEach(author => {
+        this.getAuthorsIds().forEach( function(author) {
             count[author] = new SuperMap();
         });
 
@@ -203,6 +194,10 @@ class ConvStats {
         return this.participants;
     }
 
+    getAuthorsIds(){
+        return Object.keys(this.participants) as unknown[] as number[];
+    }
+
     getAuthorCount() {
         return Object.keys(this.participants).length;
     }
@@ -222,11 +217,11 @@ class ConvStats {
     getPeopleProperties() {
 
         var colSpace = 360 / this.getAuthorCount();
-        var people = {};
+        var people:{[index:number]: {name: string, color:string}} = {};
         var count = 0;
 
-        Object.keys(this.participants).forEach(key => {
-            people[key] = {
+        Object.keys(this.participants).forEach(function(key) {
+            people[key as unknown as number] = {
                 name: this.participants[key],
                 color: 'hsl(' + colSpace * count + ', 60%, 50%)',
             }
@@ -238,7 +233,7 @@ class ConvStats {
 
 }
 
-function getKeyByValue(object, value: number|string):number {
+function getKeyByValue(object:any, value: number|string):number {
     return Object.keys(object).find(key => object[key] === value) as unknown as number;;
 }
 
@@ -250,8 +245,6 @@ class AllConvsStats {
         convs = convs.filter(function (conv) {
             return conv.hasOwnProperty('thread_type') && conv.thread_type.startsWith("Regular");
         });
-
-        console.log(convs);
 
         var joined:{[index: string]: ConvStats} = {};
         var tempparticipants:IString = {};
@@ -301,9 +294,7 @@ class AllConvsStats {
     }
 
     toTable(options:MediaKind[], time:TimeRange = null) {
-        console.log(options);
-        console.log(time);
-        var alldata = [];
+        var alldata:any[] = [];
         this.convs.forEach((conv, index) => {
             var msgCount = conv.getCountAll(time, options);
             var total = 0;
@@ -327,10 +318,6 @@ class AllConvsStats {
     get(conv:any) {
         return this.convs[conv];
     }
-
-    // getCount(time: TimeRange, ...types: MediaKind[]){
-        
-    // }
 
 }
 
