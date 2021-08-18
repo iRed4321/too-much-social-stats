@@ -13,8 +13,8 @@ class ActionLoop{
     filters: FilterFields,
     slider: TimeSlider,
     convAll: ConvAll,
-    navBar: Navbar
-    // convOne: ConvOne
+    navBar: Navbar,
+    convOne: ConvOne
   };
   action: Action;
   root: HTMLElement = document.getElementById('root');
@@ -34,12 +34,13 @@ class ActionLoop{
         MediaKind.Video
         ]
       )),
-      navBar: new Navbar()
-      // convOne: new ConvOne()
+      navBar: new Navbar(),
+      convOne: new ConvOne()
     }
     this.action = {
       view: [Tab.Conv, Conv.ALL]
     }
+    console.log('init finished');
 
   }
 
@@ -52,6 +53,10 @@ class ActionLoop{
       case 'updateData':
         this.objects.convAll.updateData(this.convs.toTable(this.objects.filters.get(), this.objects.slider.getCurrRange()));
         break;
+
+      case 'clickRow':
+        this.objects.convOne.setRow(this.convs.get(this.objects.convAll.getSelectedRow()));
+        break;
         
       default:
         break;
@@ -59,15 +64,15 @@ class ActionLoop{
   }
 
   displayConv(){
-    addDiv('root', 'convTable');
-
+    
     switch (this.action.view[1]) {
       case Conv.ALL:
+        addDiv('root', 'convTable');
         this.objects.convAll.display();
         break;
       
       case Conv.ONE:
-        // this.objects.convOne.display();
+        this.objects.convOne.display(this.objects.filters.get(), this.objects.slider.getCurrRange());
         break;
     }
     this.objects.slider.display();

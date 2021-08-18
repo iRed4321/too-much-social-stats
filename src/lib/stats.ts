@@ -220,9 +220,10 @@ class ConvStats {
         var people:{[index:number]: {name: string, color:string}} = {};
         var count = 0;
 
-        Object.keys(this.participants).forEach(function(key) {
+        var self = this;
+        Object.keys(self.participants).forEach(function(key) {
             people[key as unknown as number] = {
-                name: this.participants[key],
+                name: self.participants[key],
                 color: 'hsl(' + colSpace * count + ', 60%, 50%)',
             }
             count++;

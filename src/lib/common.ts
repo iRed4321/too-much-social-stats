@@ -27,7 +27,6 @@ type View = ViewMain | ViewConv;
 
 type Action = {
     view?: View;
-    data?: any;
     type?: string;
 }
 

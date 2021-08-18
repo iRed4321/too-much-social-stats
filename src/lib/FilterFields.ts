@@ -50,7 +50,6 @@ class FilterFields{
     }
 
     display(){
-        var container = document.getElementsByClassName("gridjs-container")[0];
         var ui = document.createElement('div');
         ui.id = 'filtersFields';
         var stringhtml = '';
@@ -63,6 +62,10 @@ class FilterFields{
 
         });
         ui.innerHTML = stringhtml;
+        var container = document.getElementsByClassName("gridjs-container")[0];
+        if(container == undefined){
+            container = document.getElementById('oneMsgGrid');
+        }
         container.appendChild(ui);
     }
 
@@ -87,7 +90,6 @@ class FilterFields{
                     value.state = checkbox.checked;
                     resolve({
                         type: 'updateData',
-                        data: self.filters,
                         view: [Tab.Conv, Conv.ANY]
                     });
                 })

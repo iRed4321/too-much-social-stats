@@ -480,7 +480,7 @@ input, button{
 }
 
 #oneMsgGrid{
-    padding: 30px;
+    display: grid;
 }
 
 @media screen and (max-width: 830px) {

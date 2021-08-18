@@ -44,7 +44,6 @@ class TimeSlider {
                 self.setCurrRange(values);
                 var action : Action = {
                     type: 'updateData',
-                    data: self.getCurrRange(),
                     view: [Tab.Conv, Conv.ANY] 
                 };
                 resolve(action);
