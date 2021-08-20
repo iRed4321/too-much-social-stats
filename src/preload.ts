@@ -3,7 +3,7 @@ import { ConvAll } from './lib/ConvAll';
 import { FilterFields } from './lib/FilterFields';
 import { ConvOne } from './lib/ConvOne';
 import { TimeSlider } from './lib/TimeSlider';
-import { Action, Conv, Tab, addDiv, MediaKind } from './lib/common';
+import { Action, Conv, Tab, addDiv, MsgDataKind } from './lib/common';
 import { Navbar } from './lib/Navbar';
 
 
@@ -26,12 +26,12 @@ class ActionLoop{
       slider: new TimeSlider(convs.getFullRange()),
       convAll: new ConvAll(convs.toTable(
         [
-        MediaKind.Audio,
-        MediaKind.Gif,
-        MediaKind.Photo,
-        MediaKind.Sticker,
-        MediaKind.Text,
-        MediaKind.Video
+        MsgDataKind.Audio,
+        MsgDataKind.Gif,
+        MsgDataKind.Photo,
+        MsgDataKind.Sticker,
+        MsgDataKind.Text,
+        MsgDataKind.Video
         ]
       )),
       navBar: new Navbar(),

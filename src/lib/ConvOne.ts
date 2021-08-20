@@ -1,4 +1,4 @@
-import { Action, Tab, Conv, addDiv, MediaKind } from "./common";
+import { Action, Tab, Conv, addDiv, MsgDataKind } from "./common";
 import { OneConvData } from "./stats";
 import { TimeRange } from "./common";
 
@@ -51,7 +51,7 @@ class ConvOne{
         });
     }
 
-    display(filters: MediaKind[], time:TimeRange){
+    display(filters: MsgDataKind[], time:TimeRange){
 
         addDiv('root', 'oneMsgGrid');
         addDiv('oneMsgGrid', 'timeRange');
@@ -67,7 +67,7 @@ class ConvOne{
 
         var sorted;
         
-        // sorted = sortItems(people, stats, MediaKind.Photo);
+        // sorted = sortItems(people, stats, MsgDataKind.Photo);
         // console.log(sorted);
         // makeGraph(sorted[0], sorted[1], 'Messages count');
       

@@ -74,7 +74,7 @@ type Sticker = {
     uri: string;
 }
 
-enum MediaKind {
+enum MsgDataKind {
     Sticker,
     Audio,
     Gif,
@@ -82,11 +82,9 @@ enum MediaKind {
     Photo,
     Text,
     Reaction,
-}
-
-enum MsgTextProp {
-    Char,
-    Word
+    File,
+    Word,
+    Char
 }
 
 
@@ -98,6 +96,6 @@ export {
     View, Main, Conv, Tab,
     SortKind, Dir,
     addDiv,
-    MediaKind,
-    MsgTextProp
+    MsgDataKind,
+    // MsgTextProp
 }

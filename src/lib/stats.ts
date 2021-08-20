@@ -1,4 +1,4 @@
-import {IString, IValue, TimeRange, MediaKind, MsgTextProp} from './common';
+import {IString, IValue, TimeRange, MsgDataKind} from './common';
 
 // function replaceEmojis(txt:string){
 //     var from = ['󾌴', '󾦇', '󾮟'];
@@ -12,13 +12,13 @@ import {IString, IValue, TimeRange, MediaKind, MsgTextProp} from './common';
 //     return txt;
 // }
 
-class SuperMap<MediaKind> extends Map<MediaKind, number> {
+class SuperMap<MsgDataKind> extends Map<MsgDataKind, number> {
 
-    add(key:MediaKind, value:number) {
+    add(key:MsgDataKind, value:number) {
         super.has(key) && super.set(key, super.get(key) + value)
     }
 
-    del(key:MediaKind, value:number) {
+    del(key:MsgDataKind, value:number) {
         super.has(key) && super.set(key, super.get(key) - value)
     }
 }
@@ -44,8 +44,10 @@ type Share = {
 }
 
 type MsgOriginal = {
+    is_unsent: boolean;
     sender_name: string;
     timestamp_ms: number;
+    files?: any[];
     photos?: any[];
     content?: string;
     share?: Share;
@@ -54,37 +56,36 @@ type MsgOriginal = {
 
 type MsgList = {[index: number] : MsgOriginal};
 
-type MsgText = {
-    [MsgTextProp.Char]: number,
-    [MsgTextProp.Word]: number,
-};
-
 class MsgStat {
-    readonly msgData: Map<MediaKind, number>;
+    readonly msgData: Map<MsgDataKind, number>;
     readonly reactionCount?: number;
     readonly author: number;
 
-    constructor(msg: MsgOriginal, author: number) {
+    constructor(msg: MsgOriginal, author: number, ) {
         this.author = author;
         this.msgData = new Map();
 
         if('content' in msg){
-            this.msgData.set(MediaKind.Text, 1);
+            this.msgData.set(MsgDataKind.Text, 1);
+            this.msgData.set(MsgDataKind.Char, msg.content.length);
+            this.msgData.set(MsgDataKind.Word, msg.content.split(' ').length - 1);
         }
         if('reactions' in msg){
-            this.msgData.set(MediaKind.Reaction, msg.reactions.length);
+            this.msgData.set(MsgDataKind.Reaction, msg.reactions.length);
         }
-        
+        if('files' in msg){
+            this.msgData.set(MsgDataKind.File, msg.files.length);
+        }
         if('sticker' in msg){
-            this.msgData.set(MediaKind.Sticker, 1);
+            this.msgData.set(MsgDataKind.Sticker, 1);
         } else if('photos' in msg){
-            this.msgData.set(MediaKind.Photo, msg.photos.length);
+            this.msgData.set(MsgDataKind.Photo, msg.photos.length);
         } else if('audio_files' in msg){
-            this.msgData.set(MediaKind.Audio, 1);
+            this.msgData.set(MsgDataKind.Audio, 1);
         } else if('gifs' in msg){
-            this.msgData.set(MediaKind.Gif, 1);
+            this.msgData.set(MsgDataKind.Gif, 1);
         } else if('videos' in msg){
-            this.msgData.set(MediaKind.Video, 1);
+            this.msgData.set(MsgDataKind.Video, 1);
         }
 
     }
@@ -123,15 +124,15 @@ class ConvStats {
         var self = this;
         Object.values(msgs).forEach(function(msg) {
             let author = getKeyByValue(self.participants, msg.sender_name);
-            if (author != undefined) {
+            if (author != undefined && msg.is_unsent != true) {
                 self.msgs[msg.timestamp_ms] = new MsgStat(msg, author);
             }
         });
 
     }
 
-    getCount(time:TimeRange, what:MediaKind[]) {
-        var count:{[index: number]: SuperMap<MediaKind>};
+    getCount(time:TimeRange, what:MsgDataKind[]) {
+        var count:{[index: number]: SuperMap<MsgDataKind>};
 
         count = {};
 
@@ -176,9 +177,9 @@ class ConvStats {
 
     }
 
-    getCountAll(time:TimeRange, what:MediaKind[]){
+    getCountAll(time:TimeRange, what:MsgDataKind[]){
         var count = Object.values(this.getCount(time, what));
-        var totalCount = new SuperMap<MediaKind>();
+        var totalCount = new SuperMap<MsgDataKind>();
         what.forEach(type => {
             totalCount.set(type, 0);
             count.forEach(person => {
@@ -294,7 +295,7 @@ class AllConvsStats {
         return range;
     }
 
-    toTable(options:MediaKind[], time:TimeRange = null) {
+    toTable(options:MsgDataKind[], time:TimeRange = null) {
         var alldata:any[] = [];
         this.convs.forEach((conv, index) => {
             var msgCount = conv.getCountAll(time, options);

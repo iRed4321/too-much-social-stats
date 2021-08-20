@@ -1,4 +1,4 @@
-import { MediaKind, Action, Tab, Conv } from "./common";
+import { MsgDataKind, Action, Tab, Conv } from "./common";
 
 type Filter = {
     id: string,
@@ -7,41 +7,41 @@ type Filter = {
 }
 
 class FilterFields{
-    filters: Map<MediaKind, Filter>
+    filters: Map<MsgDataKind, Filter>
 
     constructor(){
-        this.filters = new Map<MediaKind, Filter>([
-            [MediaKind.Audio, {
+        this.filters = new Map<MsgDataKind, Filter>([
+            [MsgDataKind.Audio, {
                 id: 'filt_Audio',
                 label: 'Audio messages',
                 state: true
             }],
-            [MediaKind.Gif, {
+            [MsgDataKind.Gif, {
                 id: 'filt_Gif',
                 label: 'Gifs',
                 state: true
             }],
-            [MediaKind.Photo, {
+            [MsgDataKind.Photo, {
                 id: 'filt_Photo',
                 label: 'Pictures',
                 state: true
             }],
-            [MediaKind.Reaction, {
+            [MsgDataKind.Reaction, {
                 id: 'filt_Reaction',
                 label: 'Reactions',
                 state: false
             }],
-            [MediaKind.Sticker, {
+            [MsgDataKind.Sticker, {
                 id: 'filt_Sticker',
                 label: 'Stickers',
                 state: true
             }],
-            [MediaKind.Text, {
+            [MsgDataKind.Text, {
                 id: 'filt_Text',
                 label: 'Classic text messages',
                 state: true
             }],
-            [MediaKind.Video, {
+            [MsgDataKind.Video, {
                 id: 'filt_Video',
                 label: 'Videos',
                 state: true
@@ -70,7 +70,7 @@ class FilterFields{
     }
 
     get(){
-        var kinds: MediaKind[] = [];
+        var kinds: MsgDataKind[] = [];
 
         this.filters.forEach((value, key) => {
             if(value.state){
