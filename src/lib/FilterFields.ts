@@ -1,49 +1,72 @@
-import { MsgDataKind, Action, Tab, Conv } from "./common";
+import { MsgKind, MsgTextKind, Action, Tab, Conv, MsgAllKind } from "./common";
 
 type Filter = {
     id: string,
     label: string,
-    state: boolean
+    state: boolean,
+    txtKind?: Map<MsgTextKind, Filter>
 }
 
 class FilterFields{
-    filters: Map<MsgDataKind, Filter>
+    filters: Map<MsgKind, Filter>
 
     constructor(){
-        this.filters = new Map<MsgDataKind, Filter>([
-            [MsgDataKind.Audio, {
+        this.filters = new Map<MsgKind, Filter>([
+            [MsgKind.Audio, {
                 id: 'filt_Audio',
                 label: 'Audio messages',
                 state: true
             }],
-            [MsgDataKind.Gif, {
+            [MsgKind.Gif, {
                 id: 'filt_Gif',
                 label: 'Gifs',
                 state: true
             }],
-            [MsgDataKind.Photo, {
+            [MsgKind.Photo, {
                 id: 'filt_Photo',
                 label: 'Pictures',
                 state: true
             }],
-            [MsgDataKind.Reaction, {
+            [MsgKind.Reaction, {
                 id: 'filt_Reaction',
                 label: 'Reactions',
                 state: false
             }],
-            [MsgDataKind.Sticker, {
+            [MsgKind.Sticker, {
                 id: 'filt_Sticker',
                 label: 'Stickers',
                 state: true
             }],
-            [MsgDataKind.Text, {
-                id: 'filt_Text',
-                label: 'Classic text messages',
-                state: true
+            [MsgKind.Message, {
+                id: 'filt_Message',
+                label: 'Text :',
+                state: true,
+                txtKind: new Map<MsgTextKind, Filter>([
+                    [MsgTextKind.Full, {
+                        id: 'filt_Message_Full',
+                        label: 'Message',
+                        state: true
+                    }],
+                    [MsgTextKind.Word, {
+                        id: 'filt_Message_Word',
+                        label: 'Words',
+                        state: false
+                    }],
+                    [MsgTextKind.Char, {
+                        id: 'filt_Message_Char',
+                        label: 'Characters',
+                        state: false
+                    }]
+                ])
             }],
-            [MsgDataKind.Video, {
+            [MsgKind.Video, {
                 id: 'filt_Video',
                 label: 'Videos',
+                state: true
+            }],
+            [MsgKind.File, {
+                id: 'filt_File',
+                label: 'File',
                 state: true
             }]
         ]);
@@ -52,13 +75,28 @@ class FilterFields{
     display(){
         var ui = document.createElement('div');
         ui.id = 'filtersFields';
-        var stringhtml = '';
-        this.filters.forEach(function(value){
+        var stringhtml = '<div><input type="checkbox" id="Text" name="filter"';
+
+        this.filters.forEach(function(value, key){
             stringhtml += '<div><input type="checkbox" id="' + value.id + '" name="filter"';
-            if(value.state){
+            if(value.state === true){
                 stringhtml +=' checked';
             }
-            stringhtml += '><label for="'+value.id+'">'+value.label+'</label></div>';
+
+            stringhtml += '><label for="'+value.id+'"> ' + value.label;
+
+            if(key == MsgKind.Message){
+                stringhtml += '<select id="textOption">';
+                value.txtKind.forEach((countMethod) => {
+                    stringhtml += '<option value="'+countMethod.id+'"';
+                    if(countMethod.state === true){
+                        stringhtml +=' selected';
+                    }
+                    stringhtml+='>'+countMethod.label+'</option>';
+                });
+                stringhtml+='</select>'
+            }
+            stringhtml+='</label></div>';
 
         });
         ui.innerHTML = stringhtml;
@@ -70,11 +108,19 @@ class FilterFields{
     }
 
     get(){
-        var kinds: MsgDataKind[] = [];
+        var kinds: MsgAllKind[] = [];
 
         this.filters.forEach((value, key) => {
             if(value.state){
-                kinds.push(key);
+                if('txtKind' in value){
+                    value.txtKind.forEach((subvalue, subKey) => {
+                        if(subvalue.state){
+                            kinds.push(subKey);
+                        }
+                    })
+                } else{
+                    kinds.push(key);
+                }
             }
         });
         return kinds;
@@ -83,6 +129,19 @@ class FilterFields{
     getUpdate(){
         var self = this;
         return new Promise<Action>(function (resolve) {
+            var select = document.getElementById("textOption") as HTMLInputElement;
+            select.addEventListener('change', (event:any) => {
+                self.filters.get(MsgKind.Message).txtKind.forEach(countMethod => {
+                    countMethod.state = false;
+                    if(countMethod.id == event.target.value){
+                        countMethod.state = true;
+                    }
+                });
+                resolve({
+                    type: 'updateData',
+                    view: [Tab.Conv, Conv.ANY]
+                });
+            });
 
             self.filters.forEach((value, key) => {
                 var checkbox = document.getElementById(value.id) as HTMLInputElement;
@@ -93,7 +152,7 @@ class FilterFields{
                         view: [Tab.Conv, Conv.ANY]
                     });
                 })
-                
+
             })
         });
 

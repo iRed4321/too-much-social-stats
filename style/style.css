@@ -415,6 +415,19 @@ input, button{
     cursor: pointer;
 }
 
+#filtersFields select{
+    background-color: #1fe0;
+    border: 0px;
+    font-weight: bold;
+    color: var(--text);
+    font-size: inherit;
+    height: 18px;
+}
+
+#filtersFields select:focus{
+    outline: none;
+}
+
 #filtersFields input{
     display: none;
 }
@@ -422,16 +435,6 @@ input, button{
 #filtersFields input:checked ~ label{
     background-color: var(--hover);
 }
-
-/* #filtersFields input{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 140px;
-    height: 100px;
-    opacity: 0;
-    cursor: pointer;
-} */
 
 @media screen and (max-width: 1080px) {
 
@@ -479,8 +482,23 @@ input, button{
 
 }
 
+#convStats{
+    grid-area: convStats;
+    height: 100%;
+    background-color: var(--row1);
+    border-radius: 10px;
+}
+
 #oneMsgGrid{
     display: grid;
+    height: calc(100vh - var(--sectionPadding) * 2 - var(--navSize));
+    gap: 15px;
+    grid-template-rows: min-content min-content auto;
+    grid-template-areas:
+        "slider"
+        "filter"
+        "convStats";
+
 }
 
 @media screen and (max-width: 830px) {

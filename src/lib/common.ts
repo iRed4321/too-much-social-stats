@@ -46,46 +46,24 @@ function addDiv(to, from) {
     document.getElementById(to).appendChild(div);
 }
 
-type Photo = {
-    uri: string;
-    creation_timestamp:number;
-}
-
-type Video = {
-    uri: string,
-    creation_timestamp: number,
-    thumbnail: {
-        uri: string
-    }
-}
-
-type Gif = {
-    uri: string;
-}
-
-type Audio = {
-    uri: string;
-    creation_timestamp:number;
-}
-
-type Text = string;
-
-type Sticker = {
-    uri: string;
-}
-
-enum MsgDataKind {
+enum MsgKind {
     Sticker,
     Audio,
     Gif,
     Video,
     Photo,
-    Text,
     Reaction,
     File,
-    Word,
-    Char
+    Message
 }
+
+enum MsgTextKind{
+    Full = 8,
+    Word = 9,
+    Char = 10
+}
+
+type MsgAllKind = MsgKind | MsgTextKind;
 
 
 export {
@@ -96,6 +74,7 @@ export {
     View, Main, Conv, Tab,
     SortKind, Dir,
     addDiv,
-    MsgDataKind,
-    // MsgTextProp
+    MsgKind,
+    MsgTextKind,
+    MsgAllKind
 }
