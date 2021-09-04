@@ -209,7 +209,8 @@ section {
 }
 
 #convTable th:not(:first-child){
-    width: 180px;
+    width: 20%;
+    min-width: 180px;
 }
 
 #convTable th:not(:last-child), #convTable td:not(:last-child){

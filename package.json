@@ -11,27 +11,24 @@
   "repository": "https://github.com/iRed4321/electron-fb-stat",
   "keywords": [
     "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo",
     "typescript"
   ],
   "author": "iRed4321",
   "license": "CC0-1.0",
   "devDependencies": {
     "@types/wnumb": "^1.2.1",
-    "@typescript-eslint/eslint-plugin": "^4.29.0",
-    "@typescript-eslint/parser": "^4.28.4",
-    "electron": "^13.1.7",
+    "@typescript-eslint/eslint-plugin": "^4.30.0",
+    "@typescript-eslint/parser": "^4.30.0",
+    "electron": "^14.0.0",
     "eslint": "^7.32.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.4.2"
   },
   "dependencies": {
-    "chart.js": "^3.5.0",
+    "@types/offscreencanvas": "^2019.6.3",
+    "chart.js": "^3.5.1",
     "gridjs": "^5.0.2",
     "normalize.css": "^8.0.1",
-    "nouislider": "^15.2.0",
+    "nouislider": "^15.4.0",
     "wnumb": "^1.2.0"
   }
 }
