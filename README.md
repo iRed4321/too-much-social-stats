@@ -17,9 +17,9 @@ Currently, this tool only supports conversations (only this tab is working, but 
 2. Execute the following commands in your command prompt to clone and install the required dependencies:
    ```bash
    # Clone this repository
-    git clone https://github.com/iRed4321/electron-fb-stat
+    git clone https://github.com/iRed4321/too-much-social-stats
    # Go into the repository
-    cd electron-fb-stat
+    cd too-much-social-stats
    # Install dependencies
     npm install
     ```
@@ -27,7 +27,7 @@ Note: If you're using Linux Bash for Windows, [see this guide](https://www.howto
 
 ## How to Use
 1. Download your data from Facebook or Instagram (choose JSON format). Extract the downloaded archive.
-2. Open your terminal in the electron-fb-stat folder
+2. Open your terminal in the too-much-social-stats folder
 3. Type `npm start` to open TMSS
 4. Choose Import and select the extracted folder
 5. Enjoy !
@@ -37,4 +37,4 @@ This tool use Electron and Typescript to work.
 
 ## License
 
-[CC0 1.0 (Public Domain)](LICENSE.md)
+Too Much Social Stats is licensed under [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1)
