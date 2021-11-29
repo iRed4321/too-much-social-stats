@@ -25,7 +25,7 @@ Currently, this tool only supports conversations (only this tab is working, but 
     ```
 
 ## How to Use
-1. Download your data from Facebook or Instagram (choose JSON format). Extract the downloaded archive.
+1. Download your data from Facebook or Instagram (JSON format / Low quality media / Only tick Messages section). Extract the downloaded archive.
 2. Open your terminal in the too-much-social-stats folder
 3. Type `npm start` to open TMSS
 4. Choose Import and select the extracted folder
