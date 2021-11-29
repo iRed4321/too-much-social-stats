@@ -13,9 +13,9 @@ function createWindow() {
 
   mainWindow.loadFile(path.join(__dirname, "../index.html"));
   mainWindow.removeMenu();
-  mainWindow.setTitle('FB Messenger stats');
+  mainWindow.setTitle('Too much social stats');
   mainWindow.maximize();
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 }
 
 app.on("ready", () => {
